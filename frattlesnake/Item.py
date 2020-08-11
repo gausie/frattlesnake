@@ -1,4 +1,5 @@
 from typing import Union
+from functools import cached_property
 
 from .kolmafia import km
 
@@ -14,15 +15,15 @@ class Item:
 
         self.id = key
 
-    @property
+    @cached_property
     def name(self) -> str:
         return km.ItemDatabase.getDisplayName(self.id)
 
-    @property
+    @cached_property
     def description(self) -> str:
         return km.ItemDatabase.getDescriptionId(self.id)
 
-    @property
+    @cached_property
     def image(self) -> str:
         return km.ItemDatabase.getImage(self.id)
 

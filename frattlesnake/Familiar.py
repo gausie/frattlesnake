@@ -1,4 +1,5 @@
 from typing import Optional, Union
+from functools import cached_property
 
 from .kolmafia import km
 from .Item import Item
@@ -27,15 +28,15 @@ class Familiar:
     def bjorned() -> Optional["Familiar"]:
 	    return Familiar(km.KoLCharacter.getBjorned().getId())
 
-    @property
+    @cached_property
     def race(self) -> str:
         return km.FamiliarDatabase.getFamiliarName(self.id)
 
-    @property
+    @cached_property
     def image(self) -> str:
         return km.FamiliarDatabase.getFamiliarImage(self.id)
 
-    @property
+    @cached_property
     def hatchling(self) -> Item:
         hatchling_id = km.FamiliarDatabase.getFamiliarLarva(self.id)
         hatchling = Item(hatchling_id)
