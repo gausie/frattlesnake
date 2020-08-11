@@ -1,57 +1,67 @@
 from typing import Optional, Union
-from dataclasses import dataclass
 
 from .kolmafia import km
 from .Item import Item
 
-@dataclass
 class Familiar:
     id: int
-    name: str
-    image: str
-    hatchling: Item
 
-    @staticmethod
-    def get_by_id(id: int) -> Optional["Familiar"]:
-        if id == -1:
+    def __init__(self, key: Union[str, int]):
+        if isinstance(key, str):
+            key = int(km.FamiliarDatabase.getFamiliarId(key))
+
+        if key == -1:
             return None
 
-        hatchling_id = km.FamiliarDatabase.getFamiliarLarva(id)
-        hatchling = Item.get(hatchling_id)
+        self.id = key
+
+    @staticmethod
+    def mine() -> Optional["Familiar"]:
+        return Familiar(km.KoLCharacter.getFamiliar().getId())
+
+    @staticmethod
+    def enthroned() -> Optional["Familiar"]:
+	    return Familiar(km.KoLCharacter.getEnthroned().getId())
+
+    @staticmethod
+    def bjorned() -> Optional["Familiar"]:
+	    return Familiar(km.KoLCharacter.getBjorned().getId())
+
+    @property
+    def race(self) -> str:
+        return km.FamiliarDatabase.getFamiliarName(self.id)
+
+    @property
+    def image(self) -> str:
+        return km.FamiliarDatabase.getFamiliarImage(self.id)
+
+    @property
+    def hatchling(self) -> Item:
+        hatchling_id = km.FamiliarDatabase.getFamiliarLarva(self.id)
+        hatchling = Item(hatchling_id)
 
         if hatchling is None:
             raise Exception(f"Hatching {hatchling_id} not recognised")
 
-        return Familiar(id=id,
-                        name=km.FamiliarDatabase.getFamiliarName(id),
-                        image=km.FamiliarDatabase.getFamiliarImage(id),
-                        hatchling=hatchling)
+        return hatchling
 
-    @staticmethod
-    def get_by_name(name: str) -> Optional["Familiar"]:
-        return Familiar.get_by_id(km.FamiliarDatabase.getFamiliarId(name))
+    @property
+    def nickname(self) -> str:
+        fam = km.KoLCharacter.findFamiliar(self.id)
+        return fam.getName()
 
-    @staticmethod
-    def get(key: Union[int, str]) -> Optional["Familiar"]:
-        if isinstance(key, int):
-            return Familiar.get_by_id(key)
-        elif isinstance(key, str):
-            return Familiar.get_by_name(key)
+    @property
+    def weight(self) -> int:
+        fam = km.KoLCharacter.findFamiliar(self.id)
+        return fam.getWeight()
 
-    @staticmethod
-    def mine() -> Optional["Familiar"]:
-        return Familiar.get(km.KoLCharacter.getFamiliar().getId())
-
-    @staticmethod
-    def enthroned() -> Optional["Familiar"]:
-	    return Familiar.get(km.KoLCharacter.getEnthroned().getId())
-
-    @staticmethod
-    def bjorned() -> Optional["Familiar"]:
-	    return Familiar.get(km.KoLCharacter.getBjorned().getId())
+    @property
+    def experience(self) -> int:
+        fam = km.KoLCharacter.findFamiliar(self.id)
+        return fam.getTotalExperience()
 
     def use(self) -> bool:
-        km.KoLmafiaCLI.DEFAULT_SHELL.executeCommand("familiar", self.name)
+        km.KoLmafiaCLI.DEFAULT_SHELL.executeCommand("familiar", self.race)
         return True
 
     def have(self) -> bool:

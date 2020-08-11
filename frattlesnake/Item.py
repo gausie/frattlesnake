@@ -1,35 +1,30 @@
-from typing import Optional, Union
-from dataclasses import dataclass
+from typing import Union
 
 from .kolmafia import km
 
-@dataclass
 class Item:
     id: int
-    name: str
-    description: str
-    image: str
 
-    @staticmethod
-    def get_by_id(id: int) -> Optional["Item"]:
-        if id == -1:
+    def __init__(self, key: Union[str, int]):
+        if isinstance(key, str):
+            key = int(km.ItemDatabase.getItemId(key))
+
+        if key == -1:
             return None
 
-        return Item(id=id,
-                    name=km.ItemDatabase.getDisplayName(id),
-                    description=km.ItemDatabase.getDescriptionId(id),
-                    image=km.ItemDatabase.getImage(id))
+        self.id = key
 
-    @staticmethod
-    def get_by_name(name: str) -> Optional["Item"]:
-        return Item.get_by_id(km.ItemDatabase.getItemId(name))
+    @property
+    def name(self) -> str:
+        return km.ItemDatabase.getDisplayName(self.id)
 
-    @staticmethod
-    def get(key: Union[int, str]) -> Optional["Item"]:
-        if isinstance(key, int):
-            return Item.get_by_id(key)
-        elif isinstance(key, str):
-            return Item.get_by_name(key)
+    @property
+    def description(self) -> str:
+        return km.ItemDatabase.getDescriptionId(self.id)
+
+    @property
+    def image(self) -> str:
+        return km.ItemDatabase.getImage(self.id)
 
     def eat(self, quantity=1, silent=False) -> bool:
         command = "eat" + ("silent" if silent else "")

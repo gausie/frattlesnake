@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Type, TypeVar
 from html import escape
 
 from .kolmafia import km
@@ -27,3 +27,8 @@ def log(message: str = "", html: bool = False):
         message = escape(message)
 
     km.RequestLogger.printLine(message)
+
+T = TypeVar("T")
+
+def get(key: str = "", t: Type[T] = str) -> T:
+    return t(km.Preferences.getObject(None, key))

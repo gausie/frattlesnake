@@ -33,6 +33,8 @@ class KoLmafia:
             path += "request."
         elif key.endswith("Database"):
             path += "persistence."
+        elif key == "Preferences":
+            path += "preferences."
 
         path += key
 
