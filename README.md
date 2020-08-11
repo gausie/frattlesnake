@@ -1,10 +1,7 @@
-<style>
-.snake:hover { animation: shake 0.50s cubic-bezier(.36,.07,.19,.97) both; transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; }
-@keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0);} 30%, 50%, 70% {transform: translate3d(-4px, 0, 0);}40%, 60% {transform: translate3d(4px, 0, 0);}}
-</style>
-
-<div style="display:flex;align-items:center;"><div>frattlesnake</div><img class="snake" src="https://cdn.coldfront.net/thekolwiki/images/a/a6/Snakeboss2.gif" style="height:1.5em; margin-left:0.5em" /></div>
+frattlesnake
 ===
+
+<img class="snake" src="https://cdn.coldfront.net/thekolwiki/images/a/a6/Snakeboss2.gif" style="height:1.5em" />
 
 `frattlesnake` is a bridge and library from KoLmafia's Java environment to Python. It is extremely 🚧 under construction 🚧 but it is usable!
 
