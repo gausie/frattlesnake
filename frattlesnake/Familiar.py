@@ -11,9 +11,6 @@ class Familiar:
         if isinstance(key, str):
             key = int(km.FamiliarDatabase.getFamiliarId(key))
 
-        if key == -1:
-            return None
-
         self.id = key
 
     @staticmethod

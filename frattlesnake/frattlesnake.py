@@ -4,7 +4,7 @@ from html import escape
 from .kolmafia import km
 
 
-def init():
+def launch_gui():
     km.KoLmafia.main(["--GUI"])
 
 
