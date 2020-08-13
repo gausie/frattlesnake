@@ -1,8 +1,7 @@
 from typing import Any
-
 from enum import Enum
 
-class ModifierType(Enum):
+class Modifier(Enum):
     AbsorbAdventures = "Absorb Adventures"
     AbsorbStats = "Absorb Stats"
     AccessoryDrop = "Accessory Drop"
@@ -188,15 +187,16 @@ class ModifierType(Enum):
 
     @property
     def name(self):
-        return next(name for name, value in vars(ModifierType).items() if value == self)
+        return next(name for name, value in vars(Modifier).items() if value == self)
 
-class Modifier:
-    type: ModifierType
-    value: Any
+    def value(self, value: Any) -> Any:
+        if self is Modifier.Effect:
+            from .Effect import Effect
+            return Effect(value)
+        if self is Modifier.MeatDrop:
+            return float(value) / 100
+        if self is Modifier.EffectDuration:
+            return int(value)
 
-    def __init__(self, type_name: str, value: Any):
-        self.type = ModifierType(type_name)
-        self.value = value
+        return value
 
-    def __repr__(self):
-        return f"<{self.type.name}: {self.value}>"

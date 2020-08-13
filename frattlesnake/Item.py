@@ -1,11 +1,13 @@
 from statistics import mean
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, TypeVar
 from functools import cached_property
 
 from .kolmafia import km
 from .Range import Range
-from .Modifier import Modifier, ModifierType
+from .Modifier import Modifier
 from .Effect import Effect
+
+T = TypeVar("T")
 
 class Item:
     id: int
@@ -69,38 +71,39 @@ class Item:
         if self.adventure_range:
             return mean(self.adventure_range)            
 
+    @cached_property
+    def single_equip(self) -> bool:
+        return Modifier.SingleEquip in self.modifiers
+
     @property
-    def modifiers(self) -> List[Modifier]:
+    def modifiers(self) -> Dict[Modifier, Any]:
+        modifiers = {}
         java_modifiers = km.Modifiers.getItemModifiers(self.id)
         
-        if java_modifiers is None:
-            return []
+        if java_modifiers is not None:
+            java_modifiers_list = java_modifiers.getString(km.Modifiers.MODIFIERS)
+            iterator = km.Modifiers.evaluateModifiers("Item", java_modifiers_list).iterator()
 
-        java_modifiers_list = java_modifiers.getString(km.Modifiers.MODIFIERS)
-        iterator = km.Modifiers.evaluateModifiers("Item", java_modifiers_list).iterator()
+            while iterator.hasNext():
+                java_modifier = iterator.next()
 
-        modifiers = []
+                name = java_modifier.getName()
 
-        while iterator.hasNext():
-            java_modifier = iterator.next()
+                if name == "none":
+                    continue
 
-            name = java_modifier.getName()
+                m_type = Modifier(name)
 
-            if name == "none":
-                continue
-
-            modifier = Modifier(name, java_modifier.getValue())
-            modifiers.append(modifier)
+                modifiers[m_type] = m_type.value(java_modifier.getValue())
 
         return modifiers
 
     @property
     def effect(self) -> Optional[Effect]:
-        for m in self.modifiers:
-            if m.type == ModifierType.Effect:
-                return Effect(m.value)
+        return self.modifiers.get(Modifier.Effect)
 
-        return None
+    def modifier(self, key: Modifier, default: T = None) -> T:
+        return self.modifiers.get(key, default)
 
     def eat(self, quantity=1, silent=False) -> bool:
         command = "eat" + ("silent" if silent else "")

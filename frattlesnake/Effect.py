@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import List, Union
+from typing import Any, Dict, Union
 from enum import Enum
 
 from .kolmafia import km
@@ -20,6 +20,9 @@ class Effect:
 
         self.id = key
 
+    def modifier(self, key: Modifier, default = None):
+        return self.modifiers.get(key, default)
+
     @cached_property
     def name(self) -> str:
         return km.EffectDatabase.getEffectName(self.id)
@@ -38,16 +41,16 @@ class Effect:
         return Quality(quality)
 
     @property
-    def modifiers(self) -> List[Modifier]:
+    def modifiers(self) -> Dict[Modifier, Any]:
         java_modifiers = km.Modifiers.getEffectModifiers(self.id)
         
         if java_modifiers is None:
-            return []
+            return {}
 
         java_modifiers_list = java_modifiers.getString(km.Modifiers.MODIFIERS)
         iterator = km.Modifiers.evaluateModifiers("Effect", java_modifiers_list).iterator()
 
-        modifiers = []
+        modifiers = {}
 
         while iterator.hasNext():
             java_modifier = iterator.next()
@@ -57,8 +60,9 @@ class Effect:
             if name == "none" or name == "":
                 continue
 
-            modifier = Modifier(name, java_modifier.getValue())
-            modifiers.append(modifier)
+            m_type = Modifier(name)
+
+            modifiers[m_type] = m_type.value(java_modifier.getValue())
 
         return modifiers
 
