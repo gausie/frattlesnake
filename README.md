@@ -3,7 +3,7 @@ frattlesnake
 
 <img class="snake" src="https://cdn.coldfront.net/thekolwiki/images/a/a6/Snakeboss2.gif" style="height:1.5em" />
 
-`frattlesnake` is a bridge and library from KoLmafia's Java environment to Python. It is extremely 🚧 under construction 🚧 but it is usable!
+`frattlesnake` is a bridge and library from KoLmafia's Java environment to a Python environment. It is extremely 🚧 under construction 🚧 but it is usable!
 
 For now just clone this repo and play with the examples. It will even download the latest `kolmafia.jar` for you to hook into.
 
