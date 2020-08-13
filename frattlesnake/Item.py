@@ -119,3 +119,29 @@ class Item:
         command = "chew" + ("silent" if silent else "")
         km.KoLmafiaCLI.DEFAULT_SHELL.executeCommand(command, "{} {}".format(quantity, self.name))
         return km.UseItemRequest.lastUpdate == ""
+
+    def price(self, historical=False, quantity=1) -> Optional[int]:
+        ar = km.AdventureResult.tallyItem(self.name, quantity, True)
+        results = km.StoreManager.searchMall(ar)
+
+        if results.size() == 0:
+            return None
+
+        remaining = quantity
+        cost = 0
+
+        for i in range(results.size()):
+            result = results.get(i)
+            available = result.quantity if result.limit == 0 else min(result.quantity, result.limit)
+
+            to_buy = min(available, remaining)
+            cost += to_buy * result.price
+            remaining -= to_buy
+
+            if remaining <= 0:
+                break
+
+        if remaining > 0:
+            return None
+
+        return cost
