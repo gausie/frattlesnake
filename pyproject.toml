@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "frattlesnake"
-version = "0.1.1"
+version = "0.1.2"
 description = "frattlesnake is a bridge and library from KoLmafia's Java environment to a Python environment"
 authors = ["Samuel Gaus <sam@gaus.co.uk>"]
 readme = "README.md"
