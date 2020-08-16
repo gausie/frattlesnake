@@ -62,7 +62,7 @@ class Effect:
 
             m_type = Modifier(name)
 
-            modifiers[m_type] = m_type.value(java_modifier.getValue())
+            modifiers[m_type] = m_type.parse_value(java_modifier.getValue())
 
         return modifiers
 

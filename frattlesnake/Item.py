@@ -58,6 +58,18 @@ class Item:
         return km.ConsumablesDatabase.getRawSpleenHit(self.name)
 
     @cached_property
+    def tradeable(self) -> bool:
+        return km.ItemDatabase.isTradeable(self.id)
+
+    @cached_property
+    def notes(self) -> str:
+        return km.ConsumablesDatabase.getNotes(self.name) or ""
+
+    @cached_property
+    def virtual(self) -> bool:
+        return km.ItemDatabase.isVirtualItem(self.id)
+
+    @cached_property
     def adventure_range(self) -> Optional[Range]:
         range = km.ConsumablesDatabase.getAdvRangeByName(self.name).strip()
 
@@ -94,7 +106,7 @@ class Item:
 
                 m_type = Modifier(name)
 
-                modifiers[m_type] = m_type.value(java_modifier.getValue())
+                modifiers[m_type] = m_type.parse_value(java_modifier.getValue())
 
         return modifiers
 
@@ -121,6 +133,9 @@ class Item:
         return km.UseItemRequest.lastUpdate == ""
 
     def price(self, historical=False, quantity=1) -> Optional[int]:
+        if historical:
+            return km.MallPriceDatabase.getPrice(self.id) * quantity
+
         ar = km.AdventureResult.tallyItem(self.name, quantity, True)
         results = km.StoreManager.searchMall(ar)
 

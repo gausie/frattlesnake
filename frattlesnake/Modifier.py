@@ -185,11 +185,7 @@ class Modifier(Enum):
     WeaponDrop = "Weapon Drop"
     WikiName = "Wiki Name"
 
-    @property
-    def name(self):
-        return next(name for name, value in vars(Modifier).items() if value == self)
-
-    def value(self, value: Any) -> Any:
+    def parse_value(self, value: Any) -> Any:
         if self is Modifier.Effect:
             from .Effect import Effect
             return Effect(value)
