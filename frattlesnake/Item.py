@@ -38,6 +38,12 @@ class Item:
 
     def __hash__(self) -> int:
         return hash(self.id)
+        
+    def __str__(self) -> str:
+        return self.name
+
+    def __repr__(self) -> str:
+        return f"Item(id={self.id},name={self.name})"
 
     def __eq__(self, other: Any) -> bool:
         if (isinstance(other, Item)):
