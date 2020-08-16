@@ -33,6 +33,18 @@ class Item:
 
         return items
 
+    def __int__(self) -> int:
+        return self.id
+
+    def __hash__(self) -> int:
+        return hash(self.id)
+
+    def __eq__(self, other: Any) -> bool:
+        if (isinstance(other, Item)):
+            return self.id == other.id
+
+        return self == other
+
     @cached_property
     def name(self) -> str:
         return km.ItemDatabase.getDisplayName(self.id)
