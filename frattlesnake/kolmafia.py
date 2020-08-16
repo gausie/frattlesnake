@@ -37,6 +37,8 @@ class KoLmafia:
             path += "session."
         elif key == "Preferences":
             path += "preferences."
+        elif key == "Interpreter":
+            path += "textui."
 
         path += key
 

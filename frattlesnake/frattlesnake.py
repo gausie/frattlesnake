@@ -28,6 +28,10 @@ def log(message: str = "", html: bool = False):
 
     km.RequestLogger.printLine(message)
 
+def execute(command: str) -> bool:
+    km.KoLmafiaCLI.DEFAULT_SHELL.executeLine(command)
+    return km.Interpreter.getContinueValue()
+
 T = TypeVar("T")
 
 def get(key: str = "", t: Type[T] = str) -> T:
